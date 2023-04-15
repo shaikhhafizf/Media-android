@@ -52,11 +52,15 @@ class GallaryFragmentAdapter(private val listener: ThumbnailClickListner, privat
             imv.setImageBitmap(decodeSampledBitmapFromUri(itemList[position].absolutePath, 220, 220))
             imv.alpha = 1.0f
         }
+        else if(isMp4FileValid(itemList[position])){
+
+        }
         else{
             brokenImgIcon.visibility = View.VISIBLE;
         }
         return view
     }
+
     fun updateAdapterData() {
         itemList = ArrayList<File>()
         notifyDataSetChanged()
@@ -73,6 +77,19 @@ class GallaryFragmentAdapter(private val listener: ThumbnailClickListner, privat
             notifyDataSetChanged()
         }
     }
+    private fun isMp4FileValid(file: File): Boolean {
+        return try {
+            // Attempt to decode the image file
+            val options = BitmapFactory.Options()
+            options.inJustDecodeBounds = true
+            BitmapFactory.decodeFile(file.absolutePath, options)
+            options.outWidth > 0 && options.outHeight > 0
+        } catch (e: Exception) {
+            // Handle any exceptions that may occur during image decoding
+            false
+        }
+    }
+
     private fun isJpegFileValid(file: File): Boolean {
         return try {
             // Attempt to decode the image file

@@ -20,6 +20,27 @@
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/clickVideo"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/clickPic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/video" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/clickPic"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/clickVideoOrPic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_camera" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/clickVideoOrPic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,7 +48,7 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_camera" />
+        app:srcCompat="@android:drawable/ic_input_add" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/recordVoice"

@@ -2,7 +2,9 @@ package com.hs.media.utils
 
 import android.content.Context
 import android.content.Intent
+import android.media.MediaRecorder
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Toast
@@ -14,15 +16,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object Capture {
-    // Directory name for saving audio,images and videos
-    const val IMAGE_DIRECTORY = "Media"
-
-    private const val REQUEST_IMAGE_CAPTURE = 1
     var currentPhotoPath: String? = null
 
-
-
-    private const val IMAGE_FILE_PROVIDER_AUTHORITY = "com.example.myapp.fileprovider"
     fun captureImage(context: Context, takePicture: ActivityResultLauncher<Intent>){
         if(Permissions.isCameraPermissionGranted(context)) {
             // Function to be triggered after camera permission is granted
@@ -53,7 +48,7 @@ object Capture {
     private fun createImageFile(context: Context): File {
         // Create an image file name
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val storageDir = context.getExternalFilesDir("Media")
 //        val storageDir = File(Environment.getExternalStorageDirectory(), "Media")
 //        storageDir.mkdirs() // Create the directory if it doesn't exist
 //        val imageFile = File(storageDir, "JPEG_${timeStamp}_.jpg")
@@ -65,4 +60,50 @@ object Capture {
         currentPhotoPath = imageFile.absolutePath
         return imageFile
     }
+    fun captureVideo(context: Context, takePicture: ActivityResultLauncher<Intent>){
+        if(Permissions.isCameraPermissionGranted(context)) {
+            // Function to be triggered after camera permission is granted
+            // Add your logic here
+            val takePictureIntent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+            val photoFile: File? = try {
+                createVideoFile(context)
+            } catch (ex: IOException) {
+                // Handle error while creating the file
+                null
+            }
+
+            photoFile?.let {
+                val photoURI = FileProvider.getUriForFile(
+                    context,
+                    context.packageName + ".fileprovider",
+                    it
+                )
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                takePicture.launch(takePictureIntent)
+            }
+        }
+        else{
+            Toast.makeText(context, "Camera permission is not given", Toast.LENGTH_SHORT).show()
+        }
+
+    }
+    private fun createVideoFile(context: Context): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir = context.getExternalFilesDir("Media")
+        val imageFile = File.createTempFile(
+            "VID_${timeStamp}",
+            ".mp4",
+            storageDir
+        )
+        currentPhotoPath = imageFile.absolutePath
+        return imageFile
+    }
+
+    fun captureVideo(context: Context){
+
+        Toast.makeText(context, "Capturing video", Toast.LENGTH_SHORT).show()
+    }
+
+
 }

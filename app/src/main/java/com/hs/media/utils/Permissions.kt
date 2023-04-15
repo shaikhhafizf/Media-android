@@ -66,11 +66,25 @@ object Permissions {
             false
         }
     }
-
-    fun getAllPermission(context: Context) {
-        isWritePermissionGranted(context)
-//        isCameraPermissionGranted(context)
-        isReadPermissionGranted(context)
+    @SuppressLint("RestrictedApi")
+    fun isAudioRecordPermissionGranted(context: Context):Boolean{
+        return if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.RECORD_AUDIO
+            ) != PackageManager.PERMISSION_GRANTED){
+            true
+        }
+        else{// Request permission
+            ContextUtils.getActivity(context)?.let {
+                ActivityCompat.requestPermissions(
+                    it,
+                    arrayOf(Manifest.permission.RECORD_AUDIO,),
+                    READ_EXTERNAL_STORAGE_REQUEST_CODE
+                )
+            }
+            false
+        }
     }
+
 
 }

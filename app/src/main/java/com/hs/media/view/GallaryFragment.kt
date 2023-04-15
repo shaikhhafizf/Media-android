@@ -1,10 +1,15 @@
 package com.hs.media.view
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaScannerConnection
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,13 +18,18 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.navigation.fragment.findNavController
 import com.hs.hafizshaikh_mapd721_optionalassignment.view.GallaryFragmentAdapter
 import com.hs.media.R
 import com.hs.media.databinding.FragmentGallaryBinding
 import com.hs.media.utils.Capture
+import com.hs.media.utils.Permissions
 import com.hs.media.utils.ThumbnailClickListner
 import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -37,7 +47,34 @@ class GallaryFragment : Fragment(),ThumbnailClickListner {
 
     companion object{
         lateinit var takePicture: ActivityResultLauncher<Intent>
+        private const val VIDEO_CAPTURE_REQUEST_CODE = 1001
     }
+
+    val videoCaptureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == AppCompatActivity.RESULT_OK) {
+            // Handle the recorded video here, if needed
+            val videoUri = result.data?.data
+            // Do something with the videoUri, e.g., display it in a VideoView or upload it to a server
+            Toast.makeText(
+                requireContext(),
+                "Video captured successfully!",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+    val imageCaptureLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == AppCompatActivity.RESULT_OK) {
+            // Handle the recorded video here, if needed
+            val videoUri = result.data?.data
+            // Do something with the videoUri, e.g., display it in a VideoView or upload it to a server
+            Toast.makeText(
+                requireContext(),
+                "Image captured successfully!",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -77,18 +114,54 @@ class GallaryFragment : Fragment(),ThumbnailClickListner {
 
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.clickVideoOrPic.setOnClickListener {
-            Capture.captureImage(view.context,GallaryFragment.takePicture)
+
+            if (binding.clickVideo.visibility == View.VISIBLE) {
+                binding.clickVideo.visibility = View.GONE // Set to invisible
+                binding.clickPic.visibility = View.GONE
+            } else {
+                binding.clickVideo.visibility = View.VISIBLE // Set to visible
+                binding.clickPic.visibility = View.VISIBLE
+            }
+//            capturing image
+//            Capture.captureImage(view.context,videoCaptureLauncher)
+//            Capture.captureVideo(view.context,videoCaptureLauncher)
 //            Snackbar.make(it, "Getting Picture", Snackbar.LENGTH_LONG)
 //                .setAction("Action", null).show()
+        }
+        binding.clickVideo.setOnClickListener{
+            Capture.captureVideo(view.context,videoCaptureLauncher)
+        }
+        binding.clickPic.setOnClickListener{
+            Capture.captureImage(view.context,imageCaptureLauncher)
         }
         binding.recordVoice.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
     }
+
+
+    private fun recordVideo() {
+        // Create an intent to capture video
+
+        if(Permissions.isCameraPermissionGranted(requireContext())) {
+
+            val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+            videoCaptureLauncher.launch(intent)
+        }
+    }
+    private fun captureImage(){
+        if(Permissions.isCameraPermissionGranted(requireContext())) {
+
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            imageCaptureLauncher.launch(intent)
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
