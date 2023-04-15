@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.hs.media.GallaryFragment"
+        android:name="com.hs.media.view.GallaryFragment"
         android:label="@string/gallary_fragment_label"
         tools:layout="@layout/fragment_gallary">
 
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.hs.media.RecorderFragment"
+        android:name="com.hs.media.view.RecorderFragment"
         android:label="@string/record_voice_label"
         tools:layout="@layout/fragment_recorder">
 

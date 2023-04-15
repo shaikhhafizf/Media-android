@@ -1,4 +1,4 @@
-package com.hs.media
+package com.hs.media.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,8 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
+import com.hs.media.R
 import com.hs.media.databinding.FragmentGallaryBinding
+import com.hs.media.utils.Capture
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -34,8 +35,9 @@ class GallaryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.clickVideoOrPic.setOnClickListener {
-            Snackbar.make(it, "Getting Picture", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+            Capture.captureImage(view.context,MainActivity.takePicture)
+//            Snackbar.make(it, "Getting Picture", Snackbar.LENGTH_LONG)
+//                .setAction("Action", null).show()
         }
         binding.recordVoice.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
