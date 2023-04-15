@@ -26,9 +26,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-    companion object{
-         lateinit var takePicture: ActivityResultLauncher<Intent>
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -41,27 +38,6 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        Permissions.getAllPermission(this)
-
-        takePicture = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == AppCompatActivity.RESULT_OK) {
-                val options = BitmapFactory.Options()
-                options.inPreferredConfig = Bitmap.Config.ARGB_8888
-                val bitmap = BitmapFactory.decodeFile(Capture.currentPhotoPath, options)
-                val imageFile = File(Capture.currentPhotoPath)
-
-                MediaScannerConnection.scanFile(
-                    this,
-                    arrayOf(imageFile.toString()),
-                    null
-                ) { path, uri ->
-                    // Media scanning completed
-                    // The photo is now visible in the Gallery app
-                    Toast.makeText(this, "Scanned", Toast.LENGTH_SHORT).show()
-                }
-
-            }
-        }
 
     }
 
@@ -99,7 +75,7 @@ class MainActivity : AppCompatActivity() {
                 // Camera permission granted, trigger the function
                 // Add your logic here
 
-                Capture.captureImage(applicationContext, takePicture)
+                Capture.captureImage(applicationContext, GallaryFragment.takePicture)
             } else {
                 // Camera permission denied, show toast or handle accordingly
                 Toast.makeText(

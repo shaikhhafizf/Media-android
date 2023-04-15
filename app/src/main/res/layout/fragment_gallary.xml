@@ -5,21 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.GallaryFragment">
+
     <LinearLayout style="@style/linearLayout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/textview_first"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/hello_first_fragment"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
         <GridView
             android:id="@+id/gridView"
             style="@style/GridStyle"/>

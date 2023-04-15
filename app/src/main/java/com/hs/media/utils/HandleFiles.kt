@@ -1,35 +1,43 @@
 package com.hs.media.utils
 
-import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Environment
-import android.provider.Settings
 import java.io.File
-import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
 
 object HandleFiles {
-fun getImageFolderLocation(context:Context):String{
 
-    // Notify the media scanner to add the image file to the gallery
-    if(Settings.System.canWrite(context)){
+    fun decodeSampledBitmapFromUri(path: String, reqWidth: Int, reqHeight: Int): Bitmap {
+        var bm: Bitmap? = null
+        // First decode with inJustDecodeBounds=true to check dimensions
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        BitmapFactory.decodeFile(path, options)
 
-        val destinationDirectory = File(Environment.getDataDirectory(), "Media")
-        if (!destinationDirectory.exists()) {
-            destinationDirectory.mkdirs()
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight)
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false
+        bm = BitmapFactory.decodeFile(path, options)
+        return bm
+    }
+
+    fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
+        // Raw height and width of image
+        val height = options.outHeight
+        val width = options.outWidth
+        var inSampleSize = 1
+
+        if (height > reqHeight || width > reqWidth) {
+            if (width > height) {
+                inSampleSize = Math.round(height.toFloat() / reqHeight.toFloat())
+            } else {
+                inSampleSize = Math.round(width.toFloat() / reqWidth.toFloat())
+            }
         }
+        return inSampleSize
+    }
 
-        return destinationDirectory.toString()
-    }
-    else{
-        return ""
-    }
-}
-    fun moveFile(targetFile: String, destinationFile: String) {
-        val sourcePath = Paths.get(targetFile)
-        val targetPath = Paths.get(destinationFile)
-        Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING)
-    }
 
 }
