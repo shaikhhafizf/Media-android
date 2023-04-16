@@ -100,9 +100,44 @@ object Capture {
         return imageFile
     }
 
-    fun captureVideo(context: Context){
+    fun captureAudio(context: Context, takePicture: ActivityResultLauncher<Intent>){
+        if(Permissions.isCameraPermissionGranted(context)) {
+            // Function to be triggered after camera permission is granted
+            // Add your logic here
+            val takePictureIntent = Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION)
+            val photoFile: File? = try {
+                createAudioFile(context)
+            } catch (ex: IOException) {
+                // Handle error while creating the file
+                null
+            }
 
-        Toast.makeText(context, "Capturing video", Toast.LENGTH_SHORT).show()
+            photoFile?.let {
+                val photoURI = FileProvider.getUriForFile(
+                    context,
+                    context.packageName + ".fileprovider",
+                    it
+                )
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                takePicture.launch(takePictureIntent)
+            }
+        }
+        else{
+            Toast.makeText(context, "Camera permission is not given", Toast.LENGTH_SHORT).show()
+        }
+
+    }
+    private fun createAudioFile(context: Context): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir = context.getExternalFilesDir("Media")
+        val imageFile = File.createTempFile(
+            "AUD_${timeStamp}",
+            ".3gp",
+            storageDir
+        )
+        currentPhotoPath = imageFile.absolutePath
+        return imageFile
     }
 
 
