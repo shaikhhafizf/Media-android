@@ -37,6 +37,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".view.VideoPlayerActivity"
+            android:label="Video Player"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Media.NoActionBar"> <!-- Add any other activity attributes as needed -->
+        </activity>
+        <activity
+            android:name=".view.ImageViewerActivity"
+            android:label="Image Viewer"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Media.NoActionBar"> <!-- Add any other activity attributes as needed -->
+        </activity>
+        <activity
+            android:name=".view.AudioPlayerActivity"
+            android:label="Audio Player"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Media.NoActionBar"> <!-- Add any other activity attributes as needed -->
+        </activity>
     </application>
 
 </manifest>

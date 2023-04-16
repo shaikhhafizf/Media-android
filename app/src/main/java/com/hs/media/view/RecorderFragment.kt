@@ -1,6 +1,7 @@
 package com.hs.media.view
 
 import android.media.MediaRecorder
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -11,7 +12,9 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.hs.media.R
 import com.hs.media.databinding.FragmentRecorderBinding
+import com.hs.media.utils.Capture
 import java.io.File
+import java.io.FileOutputStream
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -43,9 +46,13 @@ class RecorderFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonSecond.setOnClickListener {
-            if(isRecording){
-                startRecording()
-                binding.buttonSecond.text = "Pause"
+            if(!isRecording){
+                Capture.createAudioFile(requireContext()).let {
+
+                    startRecording(it)
+                    binding.buttonSecond.text = "End"
+                }
+                isRecording=true
             }
             else{
                 stopRecording()
@@ -53,15 +60,18 @@ class RecorderFragment : Fragment() {
             }
         }
     }
-    private fun startRecording() {
-        mediaRecorder = MediaRecorder()
-        mediaRecorder?.setAudioSource(MediaRecorder.AudioSource.MIC)
-        mediaRecorder?.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-        mediaRecorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-        val outputFile = File(context?.getExternalFilesDir("Media"), "audio_record.mp3")
-        mediaRecorder?.setOutputFile(outputFile.absolutePath)
-        mediaRecorder?.prepare()
-        mediaRecorder?.start()
+    private fun startRecording(outputFile:File) {
+     Capture.getRecorder(requireContext()).apply {
+         setAudioSource(MediaRecorder.AudioSource.MIC)
+         setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+         setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+         setOutputFile(FileOutputStream(outputFile).fd)
+
+         prepare()
+         start()
+
+         mediaRecorder = this
+     }
         // Update recording start time and set isRecording flag to true
         recordingStartTime = System.currentTimeMillis()
         isRecording = true
@@ -91,6 +101,8 @@ class RecorderFragment : Fragment() {
         mediaRecorder?.release()
         mediaRecorder = null
         isRecording=false
+        handler.removeCallbacks(updateElapsedTimeRunnable);
+        requireActivity().onBackPressed()
     }
 
     override fun onDestroyView() {

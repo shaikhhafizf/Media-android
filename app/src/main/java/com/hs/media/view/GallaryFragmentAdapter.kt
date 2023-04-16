@@ -2,6 +2,7 @@ package com.hs.hafizshaikh_mapd721_optionalassignment.view
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
@@ -13,9 +14,15 @@ import android.view.ViewTreeObserver
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
+import androidx.core.content.FileProvider
 import com.hs.media.R
 import com.hs.media.utils.HandleFiles.decodeSampledBitmapFromUri
 import com.hs.media.utils.ThumbnailClickListner
+import com.hs.media.view.AudioPlayerActivity
+import com.hs.media.view.ImageViewerActivity
+import com.hs.media.view.VideoPlayerActivity
 import java.io.File
 
 class GallaryFragmentAdapter(private val listener: ThumbnailClickListner, private val context: Context) : BaseAdapter() {
@@ -41,6 +48,7 @@ class GallaryFragmentAdapter(private val listener: ThumbnailClickListner, privat
             val inflater = LayoutInflater.from(context)
 
             view = inflater.inflate(R.layout.layout_thumbnail, parent, false)
+
             // Set width and height to be the same, so that each item appears as a square
             val layoutParams = view.layoutParams
             parent.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -63,19 +71,57 @@ class GallaryFragmentAdapter(private val listener: ThumbnailClickListner, privat
                     "Image" ->{
                         imv.setImageBitmap(decodeSampledBitmapFromUri(itemList[position].absolutePath, 220, 220))
                         imv.alpha = 1.0f
+
+                        // Set an OnClickListener on the view
+                        view.setOnClickListener {
+                            // Create an intent to start the ImageViewerActivity
+                            val intent = Intent(context, ImageViewerActivity::class.java)
+
+                            // Pass the image file path as an extra to the intent
+                            intent.putExtra("imagePath", itemList[position].absolutePath)
+
+                            // Start the ImageViewerActivity
+                            context.startActivity(intent)
+                        }
                     }
                     "Audio" ->{
 //                        imv.visibility = View.GONE
                         imv.alpha = 0.2f
                         audioIcon.visibility = View.VISIBLE
+                        // Set an OnClickListener on the view
+                        view.setOnClickListener {
+                            // Handle item click event here
+                            val intent = Intent(context, AudioPlayerActivity::class.java)
+                            intent.putExtra("FILE_URI", FileProvider.getUriForFile(
+                                context,
+                                "com.hs.media.fileprovider", // Replace with your app's file provider authority
+                                itemList[position]
+                            ))
+                            context.startActivity(intent)
+                        }
                     }
                     "Video" ->{
                         imv.alpha = 0.7f
                         videoIcon.visibility = View.VISIBLE
                         imv.setImageBitmap(getVideoThumbnailFromFile(itemList[position]))
+                        // Set an OnClickListener on the view
+                        view.setOnClickListener {
+                            // Handle item click event here
+                            val intent = Intent(context, VideoPlayerActivity::class.java)
+                            intent.putExtra("FILE_URI", FileProvider.getUriForFile(
+                                context,
+                                "com.hs.media.fileprovider", // Replace with your app's file provider authority
+                                itemList[position]
+                            ))
+                            context.startActivity(intent)
+                        }
                     }
                     "Unknown" ->{
                         brokenImgIcon.visibility = View.VISIBLE;
+                        view.setOnClickListener {
+                            // Handle item click event here
+                            Toast.makeText(context, "Cannot open this file as it is carshed", Toast.LENGTH_SHORT).show()
+                        }
 
                     }
                 }
@@ -83,7 +129,12 @@ class GallaryFragmentAdapter(private val listener: ThumbnailClickListner, privat
         }
         else{
             brokenImgIcon.visibility = View.VISIBLE;
+            view.setOnClickListener {
+                // Handle item click event here
+                Toast.makeText(context, "Cannot open this file as it is carshed", Toast.LENGTH_SHORT).show()
+            }
         }
+
         return view
     }
     fun getVideoThumbnailFromFile(videoFile: File): Bitmap? {
@@ -131,8 +182,8 @@ class GallaryFragmentAdapter(private val listener: ThumbnailClickListner, privat
         // Return the file type based on the file extension
         return when (fileExtension.toLowerCase()) {
             "jpg", "jpeg", "png", "gif" -> "Image"
-            "mp3", "wav", "ogg", "aac" -> "Audio"
-            "mp4", "3gp", "mkv", "avi" -> "Video"
+            "3gp" -> "Audio"
+            "mp4" -> "Video"
             else -> "Unknown"
         }
     }

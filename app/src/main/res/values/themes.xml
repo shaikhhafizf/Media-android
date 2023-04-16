@@ -18,6 +18,7 @@
     <style name="Theme.Media.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="android:textColorPrimary">?attr/colorOnPrimary</item>
+        <item name="colorControlNormal">?attr/colorOnPrimary</item>
         <item name="windowNoTitle">true</item>
     </style>
 

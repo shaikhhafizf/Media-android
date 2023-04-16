@@ -55,6 +55,7 @@ class GallaryFragment : Fragment(),ThumbnailClickListner {
             // Handle the recorded video here, if needed
             val videoUri = result.data?.data
             // Do something with the videoUri, e.g., display it in a VideoView or upload it to a server
+            adapter.updateAdapterData()
             Toast.makeText(
                 requireContext(),
                 "Video captured successfully!",
@@ -67,6 +68,7 @@ class GallaryFragment : Fragment(),ThumbnailClickListner {
             // Handle the recorded video here, if needed
             val videoUri = result.data?.data
             // Do something with the videoUri, e.g., display it in a VideoView or upload it to a server
+            adapter.updateAdapterData()
             Toast.makeText(
                 requireContext(),
                 "Image captured successfully!",
@@ -127,11 +129,6 @@ class GallaryFragment : Fragment(),ThumbnailClickListner {
                 binding.clickVideo.visibility = View.VISIBLE // Set to visible
                 binding.clickPic.visibility = View.VISIBLE
             }
-//            capturing image
-//            Capture.captureImage(view.context,videoCaptureLauncher)
-//            Capture.captureVideo(view.context,videoCaptureLauncher)
-//            Snackbar.make(it, "Getting Picture", Snackbar.LENGTH_LONG)
-//                .setAction("Action", null).show()
         }
         binding.clickVideo.setOnClickListener{
             Capture.captureVideo(view.context,videoCaptureLauncher)
