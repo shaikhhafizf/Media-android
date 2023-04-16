@@ -1,7 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".view.AudioPlayerActivity">
+  <androidx.appcompat.widget.Toolbar
+      android:id="@+id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="?attr/actionBarSize"
+      android:background="?attr/colorPrimary"
+      android:elevation="4dp" />
+  <ImageView
+      android:id="@+id/ivAlbumArt"
+      android:layout_width="200dp"
+      android:layout_height="200dp"
+      android:src="@drawable/audio"
+      android:layout_marginTop="48dp"
+      android:contentDescription="@string/album_art" />
 
-  <!-- UI elements for your audio player, such as buttons, text views, etc. -->
+  <TextView
+      android:id="@+id/tvSongTitle"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/ivAlbumArt"
+      android:text="@string/song_title"
+      android:textSize="24sp"
+      android:textColor="@android:color/black" />
+
+  <SeekBar
+      android:id="@+id/seekBar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/tvSongTitle"
+      android:layout_marginTop="16dp" />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:layout_below="@+id/seekBar"
+      android:gravity="center">
+
+<!--    <Button-->
+<!--        android:id="@+id/btnPrevious"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="@string/previous" />-->
+
+    <Button
+        android:id="@+id/btnPlayPause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/play"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
+
+<!--    <Button-->
+<!--        android:id="@+id/btnNext"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="@string/next" />-->
+
+  </LinearLayout>
 
 </RelativeLayout>

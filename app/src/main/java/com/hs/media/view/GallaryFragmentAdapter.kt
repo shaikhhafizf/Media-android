@@ -90,14 +90,11 @@ class GallaryFragmentAdapter(private val listener: ThumbnailClickListner, privat
                         audioIcon.visibility = View.VISIBLE
                         // Set an OnClickListener on the view
                         view.setOnClickListener {
-                            // Handle item click event here
                             val intent = Intent(context, AudioPlayerActivity::class.java)
-                            intent.putExtra("FILE_URI", FileProvider.getUriForFile(
-                                context,
-                                "com.hs.media.fileprovider", // Replace with your app's file provider authority
-                                itemList[position]
-                            ))
+                            val fileUri = // Your file URI here
+                                intent.putExtra("File", itemList[position].absolutePath)
                             context.startActivity(intent)
+
                         }
                     }
                     "Video" ->{
