@@ -137,7 +137,10 @@ class GallaryFragment : Fragment(),ThumbnailClickListner {
             Capture.captureImage(view.context,imageCaptureLauncher)
         }
         binding.recordVoice.setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+            if(Permissions.isNotificationPermissionGranted(requireContext())){
+
+                findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+            }
         }
     }
 

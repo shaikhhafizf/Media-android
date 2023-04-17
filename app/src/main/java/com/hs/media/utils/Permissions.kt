@@ -1,3 +1,4 @@
+
 package com.hs.media.utils
 
 import android.Manifest
@@ -33,7 +34,7 @@ object Permissions {
         return if (ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED){
+            ) == PackageManager.PERMISSION_GRANTED){
             true
         }
         else{// Request permission
@@ -52,7 +53,7 @@ object Permissions {
         return if (ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.READ_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED){
+            ) == PackageManager.PERMISSION_GRANTED){
             true
         }
         else{// Request permission
@@ -71,7 +72,7 @@ object Permissions {
         return if (ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.RECORD_AUDIO
-            ) != PackageManager.PERMISSION_GRANTED){
+            ) == PackageManager.PERMISSION_GRANTED){
             true
         }
         else{// Request permission
@@ -85,6 +86,24 @@ object Permissions {
             false
         }
     }
-
+    @SuppressLint("RestrictedApi")
+    fun isNotificationPermissionGranted(context: Context):Boolean{
+        return if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED){
+            true
+        }
+        else{// Request permission
+            ContextUtils.getActivity(context)?.let {
+                ActivityCompat.requestPermissions(
+                    it,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS,),
+                    READ_EXTERNAL_STORAGE_REQUEST_CODE
+                )
+            }
+            false
+        }
+    }
 
 }

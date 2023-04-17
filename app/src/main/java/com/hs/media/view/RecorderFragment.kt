@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.hs.media.R
 import com.hs.media.databinding.FragmentRecorderBinding
 import com.hs.media.utils.Capture
+import com.hs.media.utils.Permissions
 import java.io.File
 import java.io.FileOutputStream
 
@@ -46,13 +47,15 @@ class RecorderFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonSecond.setOnClickListener {
-            if(!isRecording){
-                Capture.createAudioFile(requireContext()).let {
+        if(!isRecording){
+            if(Permissions.isAudioRecordPermissionGranted(requireContext())){
+                    Capture.createAudioFile(requireContext()).let {
 
-                    startRecording(it)
-                    binding.buttonSecond.text = "End"
+                        startRecording(it)
+                        binding.buttonSecond.text = "End"
+                    }
+                    isRecording=true
                 }
-                isRecording=true
             }
             else{
                 stopRecording()
